@@ -38,6 +38,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
+    console.log("Connected to DB");
     const productCollection = client.db("Western_Tools").collection("products");
     const orderCollection = client.db("Western_Tools").collection("orders");
 
@@ -83,32 +84,12 @@ async function run() {
     });
 
     app.get("/orders", async (req, res) => {
-      const query = {};
+      const email = req.query.email;
+      const query = { email: email };
       const cursor = orderCollection.find(query);
       const orders = await cursor.toArray();
       res.send(orders);
     });
-    // app.get("/user", async (req, res) => {
-    //   const users = await userCollection.find().toArray();
-    //   res.send(users);
-    // });
-
-    // app.put("/user/:email", async (req, res) => {
-    //   const email = req.params.email;
-    //   const user = req.body;
-    //   const filter = { email: email };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: user,
-    //   };
-    //   const result = await userCollection.updateOne(filter, updateDoc, options);
-    //   const token = jwt.sign(
-    //     { email: email },
-    //     process.env.ACCESS_TOKEN_SECRET,
-    //     { expiresIn: "1h" }
-    //   );
-    //   res.send(result);
-    // });
   } finally {
   }
 }
