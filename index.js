@@ -20,27 +20,26 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
-function verifyJWT(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).send({ message: "UnAuthorized access" });
-  }
-
-  const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
-    if (err) {
-      return res.status(403).send({ message: "Forbidden access" });
-    }
-    req.decoded = decoded;
-    next();
-  });
-}
+// function verifyJWT(req, res, next) {
+//   const authHeader = req.headers.authorization;
+//   if (!authHeader) {
+//     return res.status(401).send({ message: "UnAuthorized access" });
+//   }
+//   const token = authHeader.split(" ")[1];
+//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+//     if (err) {
+//       return res.status(403).send({ message: "Forbidden access" });
+//     }
+//     req.decoded = decoded;
+//     next();
+//   });
+// }
 
 async function run() {
   try {
     await client.connect();
     const productCollection = client.db("Western_Tools").collection("products");
-    const userCollection = client.db("Western_Tools").collection("users");
+    const orderCollection = client.db("Western_Tools").collection("orders");
 
     // Products Data
     app.get("/products", async (req, res) => {
@@ -55,6 +54,12 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const product = await productCollection.findOne(query);
       res.send(product);
+    });
+
+    app.post("/orders", async (req, res) => {
+      const order = req.body;
+      const result = await orderCollection.insertOne(order);
+      res.send(result);
     });
 
     // app.get("/user", async (req, res) => {
