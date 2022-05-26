@@ -41,6 +41,7 @@ async function run() {
     console.log("Connected to DB");
     const productCollection = client.db("Western_Tools").collection("products");
     const orderCollection = client.db("Western_Tools").collection("orders");
+    const userCollection = client.db("Western_Tools").collection("users");
 
     // Products Data
     app.get("/products", async (req, res) => {
@@ -89,6 +90,28 @@ async function run() {
       const cursor = orderCollection.find(query);
       const orders = await cursor.toArray();
       res.send(orders);
+    });
+
+    app.put("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      const token = jwt.sign(
+        { email: email },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+      console.log("updated", updatedDoc);
+      res.send({ result, token });
     });
   } finally {
   }
