@@ -62,6 +62,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
     // app.get("/user", async (req, res) => {
     //   const users = await userCollection.find().toArray();
     //   res.send(users);
