@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// app.use(cors({ origin: "https://western-tools-company.web.app" }));
+app.use(cors({ origin: "https://western-tools-company.web.app" }));
 
 app.use(express.json());
 
@@ -123,11 +123,6 @@ async function run() {
       const users = await userCollection.find().toArray();
       res.send(users);
     });
-
-    // app.get("/users", verifyJWT, async (req, res) => {
-    //   const users = await userCollection.find().toArray();
-    //   res.send(users);
-    // });
 
     app.get("/users/:email", verifyJWT, async (req, res) => {
       const email = req.params.email;
