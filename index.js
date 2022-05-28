@@ -98,6 +98,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const cursor = orderCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+
     app.get("/orders", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const decodedEmail = req.decoded.email;
@@ -111,9 +118,40 @@ async function run() {
       }
     });
 
-    app.get("/users", verifyJWT, async (req, res) => {
+    app.get("/users", async (req, res) => {
       const users = await userCollection.find().toArray();
       res.send(users);
+    });
+
+    // app.get("/users", verifyJWT, async (req, res) => {
+    //   const users = await userCollection.find().toArray();
+    //   res.send(users);
+    // });
+
+    app.get("/users/:email", verifyJWT, async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email: email });
+      res.send(user);
+    });
+
+    app.put("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const data = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          review: data.review,
+          rating: data.rating,
+        },
+      };
+      const result = await userCollection.updateOne(
+        filter,
+        updatedDoc,
+        options
+      );
+      console.log("updated", updatedDoc);
+      res.send(result);
     });
 
     app.get("/admin/:email", async (req, res) => {
