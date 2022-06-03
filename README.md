@@ -2,7 +2,7 @@
 
 ## Live site: https://western-tools-company.web.app/
 
-## Github link (Server site): https://github.com/programming-hero-web-course1/manufacturer-website-client-side-Ashiqul-Hoque
+## Github link (Client site): https://github.com/Ashiqul-Hoque/Western-Tools_Client-Side
 
 ## Project Summary:
 

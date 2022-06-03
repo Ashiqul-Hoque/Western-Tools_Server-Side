@@ -106,7 +106,7 @@ async function run() {
       res.send(orders);
     });
 
-    app.get("/orders", verifyJWT, async (req, res) => {
+    app.get("/orders", async (req, res) => {
       const email = req.query.email;
       const decodedEmail = req.decoded.email;
       if (email === decodedEmail) {
@@ -124,7 +124,7 @@ async function run() {
       res.send(users);
     });
 
-    app.get("/users/:email", verifyJWT, async (req, res) => {
+    app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
       res.send(user);
